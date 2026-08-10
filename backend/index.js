@@ -17,9 +17,22 @@ const app = express();
 
 await connectCloudinary();
 // allow multiple origins
-const allowedOrigins = "https://grosery-edxr.onrender.com";
-//middlewares
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://grosery-edxr.onrender.com"
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true
+}));
 app.use(cookieParser());
 app.use(express.json());
 
